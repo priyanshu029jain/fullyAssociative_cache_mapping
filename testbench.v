@@ -1,5 +1,10 @@
+`timescale 1ns / 1ps
+`include "fullyAssociative_mapping.v" 
+
 
 module testbench;
+    reg clk;
+    reg rst;
     reg [4:0] address;
     reg [7:0] data_in;
     reg write_enable;
@@ -8,7 +13,9 @@ module testbench;
     wire hit;
     wire [1:0] hit_line;
 
-    fullyAssociative_mapping uut (
+    fullyAssociative_mapping dut (
+        .clk(clk),
+        .rst(rst),
         .address(address),
         .data_in(data_in),
         .write_enable(write_enable),
@@ -17,9 +24,13 @@ module testbench;
         .hit(hit),
         .hit_line(hit_line)
     );
+      // Clock generation
+    always #5 clk = ~clk; // 10 time units period
 
     initial begin
         // Initialize inputs
+        clk = 1'b0;
+        rst = 1'b1;
         address = 5'b0_0000; 
         data_in = 8'b0000_0000; 
         write_enable = 1'b0;
@@ -33,6 +44,9 @@ module testbench;
         $display("Starting simulation...");
         $monitor("Time: %0t | Address: %b | Data In: %b | Write Enable: %b | Read Enable: %b | Data Out: %b | Hit: %b | Hit Line: %b", 
                  $time, address, data_in, write_enable, read_enable, data_out, hit, hit_line);
+
+        // Reset the system
+        #12 rst = 1'b0; // Deassert reset after 10 time units\
 
         // Wait for a few time units and then change the address
         #10 read_enable = 1'b1; // Enable reading
