@@ -1,11 +1,11 @@
 `timescale 1ns / 1ps
-`include "fullyAssociative_mapping.v" 
+//`include "fullyAssociative_mapping.v" 
 
 
 module testbench;
     reg clk;
     reg rst;
-    reg [4:0] address;
+    reg [6:0] address;
     reg [7:0] data_in;
     reg write_enable;
     reg read_enable;
@@ -31,7 +31,7 @@ module testbench;
         // Initialize inputs
         clk = 1'b0;
         rst = 1'b1;
-        address = 5'b0_0000; 
+        address = 7'b000_0000; 
         data_in = 8'b0000_0000; 
         write_enable = 1'b0;
         read_enable = 1'b0; 
@@ -50,17 +50,17 @@ module testbench;
 
         // Wait for a few time units and then change the address
         #10 read_enable = 1'b1; // Enable reading
-        #10 address = 5'b0_0001; 
-        #10 address = 5'b0_0010; 
-        #10 address = 5'b0_0011; 
+        #10 address = 7'b000_0001; 
+        #10 address = 7'b000_0010; 
+        #10 address = 7'b000_0011; 
         #10 read_enable = 1'b0; // Disable reading
 
         // Now enable writing to the cache
         #10 write_enable = 1'b1; // Enable writing
         #10 data_in = 8'b1010_1010; 
-            address = 5'b0_1001; 
+            address = 7'b000_1001; 
         #10 data_in = 8'b1100_1100; 
-            address = 5'b0_0110; 
+            address = 7'b000_0110; 
         #10 write_enable = 1'b0; // Disable writing
 
         // Read from the same address again to check for a hit
