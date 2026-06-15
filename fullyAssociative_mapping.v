@@ -118,7 +118,7 @@ module fullyAssociative_mapping #(
           end
 
           // If all lines are valid, replace the first line (simple replacement policy)
-          if (~|valid)
+          if (&valid)
           begin : replace_line
             cache[0] <= memory[block_address];
             tag[0] <= block_address;
@@ -158,7 +158,7 @@ module fullyAssociative_mapping #(
           end
 
           // If all lines are valid, replace the first line (simple replacement policy)
-          if (~|valid)
+          if (&valid)
           begin : replace_line
             cache[0] <= memory[block_address];
             tag[0] <= block_address;
