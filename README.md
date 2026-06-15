@@ -31,6 +31,7 @@ fullyassociative_cache_mapping/
 ├── simulation_3.png           # Waveform analysis showing automated slot allocation updates
 ├── simulation_4.png           # Waveform verification documenting fallback block eviction
 └── simulation_waveform.png    # Comprehensive behavioral timeline showing end-to-end execution
+```
 
 ## 📐 Address Space Partitioning
 
