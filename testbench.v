@@ -5,15 +5,20 @@
 module testbench;
     reg clk;
     reg rst;
-    reg [6:0] address;
-    reg [7:0] data_in;
+    reg [7:0] address;
+    reg [15:0] data_in;
     reg write_enable;
     reg read_enable;
-    wire [7:0] data_out;
+    wire [15:0] data_out;
     wire hit;
-    wire [1:0] hit_line;
+    wire [2:0] hit_line;
 
-    fullyAssociative_mapping dut (
+    fullyAssociative_mapping #(
+        .WORD_SIZE(2),  // Size of a word in bytesS
+        .BLOCK_SIZE(4), // Number of words per block
+        .CACHE_LINES(8),   // Number of lines in the cache
+        .RAM_BLOCKS(64)  // Number of blocks in memory
+    ) dut (
         .clk(clk),
         .rst(rst),
         .address(address),
@@ -31,8 +36,8 @@ module testbench;
         // Initialize inputs
         clk = 1'b0;
         rst = 1'b1;
-        address = 7'b000_0000; 
-        data_in = 8'b0000_0000; 
+        address = 8'b0000_0000; 
+        data_in = 16'h0000; 
         write_enable = 1'b0;
         read_enable = 1'b0; 
 
@@ -50,21 +55,21 @@ module testbench;
 
         // Wait for a few time units and then change the address
         #10 read_enable = 1'b1; // Enable reading
-        #10 address = 7'b000_0001; 
-        #10 address = 7'b000_0010; 
-        #10 address = 7'b000_0011; 
+        #10 address = 8'h14; 
+        #10 address = 8'h28; 
+        #10 address = 8'h36; 
         #10 read_enable = 1'b0; // Disable reading
 
         // Now enable writing to the cache
-        #10 write_enable = 1'b1; // Enable writing
-        #10 data_in = 8'b1010_1010; 
-            address = 7'b000_1001; 
-        #10 data_in = 8'b1100_1100; 
-            address = 7'b000_0110; 
+        write_enable = 1'b1; // Enable writing
+        #10 data_in = 16'h1010; 
+            address = 8'h19; 
+        #10 data_in = 16'h2020; 
+            address = 8'h16; 
         #10 write_enable = 1'b0; // Disable writing
 
         // Read from the same address again to check for a hit
-        #10 read_enable = 1'b1; // Enable reading again
+        read_enable = 1'b1; // Enable reading again
 
         $display("Simulation finished.");
         // Finish simulation after some time
